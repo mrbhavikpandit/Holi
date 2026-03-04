@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Holi — Festival of Colors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --magenta: #e91e8c;
+      --saffron: #ff6b00;
+      --turmeric: #f5c800;
+      --sky: #00bfff;
+      --emerald: #00c853;
+      --violet: #7c3aed;
+      --pink: #ff4081;
+      --deep: #0a0012;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom Cursor */
+    .cursor {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      background: white;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, #7c3aed55 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 30%, #e91e8c44 0%, transparent 55%),
+                  radial-gradient(ellipse at 50% 80%, #ff6b0033 0%, transparent 50%),
+                  #0a0012;
+    }
+
+    /* Floating color blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.55;
+      animation: drift linear infinite;
+    }
+    .blob:nth-child(1)  { width:300px;height:300px;background:var(--magenta);top:5%;left:10%;animation-duration:18s;animation-delay:0s; }
+    .blob:nth-child(2)  { width:200px;height:200px;background:var(--saffron);top:20%;right:8%;animation-duration:22s;animation-delay:-4s; }
+    .blob:nth-child(3)  { width:250px;height:250px;background:var(--sky);bottom:15%;left:20%;animation-duration:15s;animation-delay:-7s; }
+    .blob:nth-child(4)  { width:180px;height:180px;background:var(--emerald);bottom:25%;right:15%;animation-duration:20s;animation-delay:-2s; }
+    .blob:nth-child(5)  { width:150px;height:150px;background:var(--turmeric);top:50%;left:50%;animation-duration:25s;animation-delay:-10s; }
+
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      25%  { transform: translate(40px, -30px) scale(1.05); }
+      50%  { transform: translate(-20px, 50px) scale(0.95); }
+      75%  { transform: translate(-50px, -20px) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* Powder particles */
+    .particles { position: absolute; inset: 0; pointer-events: none; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: burst ease-out forwards;
+    }
+    @keyframes burst {
+      0%   { opacity: 0; transform: translate(0,0) scale(0); }
+      20%  { opacity: 0.9; }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1); }
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hindi-title {
+      font-family: 'Yatra One', cursive;
+      font-size: clamp(5rem, 18vw, 13rem);
+      line-height: 0.9;
+      background: linear-gradient(135deg, var(--turmeric) 0%, var(--magenta) 40%, var(--sky) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(233,30,140,0.5));
+      animation: titlePop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes titlePop {
+      from { opacity:0; transform: scale(0.6) rotate(-5deg); }
+      to   { opacity:1; transform: scale(1) rotate(0deg); }
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3vw, 1.8rem);
+      color: rgba(255,255,255,0.75);
+      margin-top: 0.5rem;
+      letter-spacing: 0.1em;
+      animation: fadeUp 1s 0.4s ease both;
+    }
+
+    .date-badge {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.5rem 1.5rem;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);
+      animation: fadeUp 1s 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(30px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.4;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+    .scroll-hint span { width:1px; height:40px; background:white; display:block; }
+    @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+
+    /* ─── SECTION SHARED ─── */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-family: 'Yatra One', cursive;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-text p {
+      color: rgba(255,255,255,0.7);
+      line-height: 1.8;
+      font-weight: 300;
+      font-size: 1.05rem;
+    }
+    .about-text p + p { margin-top: 1rem; }
+
+    .color-wheel {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      margin: 0 auto;
+    }
+    .color-wheel .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      animation: spinRing linear infinite;
+    }
+    .ring-1 { background: conic-gradient(var(--magenta), var(--saffron), var(--turmeric), var(--emerald), var(--sky), var(--violet), var(--magenta)); animation-duration: 10s; }
+    .ring-2 { inset: 20px; background: conic-gradient(var(--sky), var(--violet), var(--magenta), var(--saffron), var(--turmeric), var(--sky)); animation-duration: 16s; animation-direction: reverse; }
+    .ring-3 { inset: 40px; background: conic-gradient(var(--turmeric), var(--magenta), var(--sky), var(--emerald), var(--turmeric)); animation-duration: 8s; }
+    .ring-center {
+      position: absolute;
+      inset: 60px;
+      border-radius: 50%;
+      background: var(--deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Yatra One', cursive;
+      font-size: 3rem;
+    }
+    @keyframes spinRing {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ─── COLORS ─── */
+    .colors-section { text-align: center; }
+    .colors-section h2 { background: linear-gradient(90deg,var(--turmeric),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    .color-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .color-card {
+      border-radius: 20px;
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .color-card:hover { transform: translateY(-10px) scale(1.04); }
+    .color-swatch {
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    .color-swatch::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4));
+    }
+    .color-card-body {
+      padding: 1rem 0.75rem;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+    }
+    .color-card-body h3 { font-size: 0.95rem; font-weight: 600; }
+    .color-card-body p { font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 4px; line-height: 1.4; }
+
+    /* ─── RITUAL TIMELINE ─── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--magenta), var(--sky), var(--turmeric));
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding-left: 2rem;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -2.45rem;
+      top: 4px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--deep);
+    }
+    .timeline-item h3 { font-family: 'Yatra One', cursive; font-size: 1.4rem; margin-bottom: 0.4rem; }
+    .timeline-item p { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.7; font-weight: 300; }
+    .timeline-time { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.5; margin-bottom: 0.3rem; }
+
+    /* ─── SPLASH CANVAS ─── */
+    .canvas-section {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .canvas-section p { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 1rem; }
+    #splashCanvas {
+      border-radius: 20px;
+      cursor: crosshair;
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+    footer span { color: var(--magenta); }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+      margin: 0 auto;
+      max-width: 1100px;
+    }
+
+    @media (max-width: 700px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .color-wheel { width: 240px; height: 240px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-content">
+    <h1 class="hindi-title">होली</h1>
+    <p class="subtitle">Festival of Colors · Festival of Love</p>
+    <div class="date-badge">March · Phalgun Purnima</div>
+  </div>
+
+  <div class="scroll-hint">
+    <span></span>
+    Explore
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="divider"></div>
+<section>
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="section-label">The Story</p>
+      <h2 style="background:linear-gradient(135deg,#fff,var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">What is Holi?</h2>
+      <p>Holi is one of the most beloved festivals in the Hindu calendar — a riotous celebration of color, joy, and the victory of good over evil. Celebrated on the full moon day of the month of Phalgun, it marks the arrival of spring.</p>
+      <p>The festival is rooted in the legend of Prahlada and Holika, and also celebrates the divine love of Radha and Krishna. It is a day when social barriers dissolve, and people drench each other in vivid gulal powders and water.</p>
+      <p>From the streets of Mathura to cities around the world, Holi transforms ordinary spaces into living, breathing canvases of pure joy.</p>
+    </div>
+    <div class="color-wheel">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="ring-center">🎨</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLORS -->
+<div class="divider"></div>
+<section class="colors-section">
+  <p class="section-label">The Palette</p>
+  <h2>Colors & Their Meaning</h2>
+  <div class="color-cards">
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #ff4081, #c0003c);"></div>
+      <div class="color-card-body">
+        <h3>Pink & Red</h3>
+        <p>Love, energy, and the eternal bond of Radha-Krishna</p>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #ff8f00, #e65100);"></div>
+      <div class="color-card-body">
+        <h3>Saffron</h3>
+        <p>Courage, sacrifice, and the sacred flame</p>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #f9e000, #bfa000);"></div>
+      <div class="color-card-body">
+        <h3>Yellow</h3>
+        <p>Turmeric blessings, spring harvest, and new beginnings</p>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #00c853, #006028);"></div>
+      <div class="color-card-body">
+        <h3>Green</h3>
+        <p>Life, nature, and the renewal of the earth</p>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #00bfff, #0062cc);"></div>
+      <div class="color-card-body">
+        <h3>Blue</h3>
+        <p>The divine color of Lord Krishna, sky, and infinity</p>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background: radial-gradient(circle at 40% 40%, #aa00ff, #5500aa);"></div>
+      <div class="color-card-body">
+        <h3>Violet</h3>
+        <p>Wisdom, mystery, and spiritual devotion</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="divider"></div>
+<section>
+  <p class="section-label">The Celebration</p>
+  <h2 style="background:linear-gradient(90deg,var(--saffron),var(--turmeric));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">How Holi Unfolds</h2>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--saffron);"></div>
+      <div class="timeline-time">Evening Before</div>
+      <h3>Holika Dahan 🔥</h3>
+      <p>The night before Holi, bonfires are lit across the country to commemorate the burning of the demoness Holika and the triumph of devotion over evil. People gather to perform rituals, sing folk songs, and ward off negativity.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--sky);"></div>
+      <div class="timeline-time">Morning</div>
+      <h3>Rangwali Holi — The Color Play 🎨</h3>
+      <p>As dawn breaks, streets explode with color. Children and adults alike throw gulal powder and spray colored water with pichkaris (water guns). Everyone is fair game — no one stays unstained.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--emerald);"></div>
+      <div class="timeline-time">Midday</div>
+      <h3>Music & Dance 🥁</h3>
+      <p>Dhol drums beat through neighborhoods. Crowds dance in the streets. Classical and folk songs celebrating Krishna and Radha fill the air. The joy is collective, contagious, and wholly uninhibited.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--magenta);"></div>
+      <div class="timeline-time">Afternoon</div>
+      <h3>Thandai & Sweets 🍬</h3>
+      <p>After the revelry, families share thandai (a spiced milk drink), gujiya (sweet dumplings), puran poli, and papri chaat. Food and feasting bind neighbors and strangers alike into one joyful family.</p>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--violet);"></div>
+      <div class="timeline-time">Evening</div>
+      <h3>Milni — Forgiveness & Reunion 🙏</h3>
+      <p>As the day winds down, people visit relatives and friends, embrace, and exchange sweets. Old grudges are forgiven. New relationships are formed. Holi is a reset for the soul.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- INTERACTIVE CANVAS -->
+<div class="divider"></div>
+<div class="canvas-section">
+  <p class="section-label">Interactive</p>
+  <h2 style="font-family:'Yatra One',cursive;font-size:clamp(2rem,5vw,3.5rem);margin-bottom:0.5rem;">Throw Colors!</h2>
+  <canvas id="splashCanvas" width="900" height="350"></canvas>
+  <p>🖱️ Click or drag on the canvas to throw Holi colors</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Made with <span>♥</span> in celebration of the Festival of Colors &nbsp;·&nbsp; होली मुबारक हो
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+
+  // Hero burst on load
+  const colors = ['#e91e8c','#ff6b00','#f5c800','#00bfff','#00c853','#7c3aed','#ff4081','#fff'];
+  const particlesEl = document.getElementById('particles');
+
+  function spawnParticles(x, y, count = 18) {
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 6 + Math.random() * 20;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist  = 80 + Math.random() * 200;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${x}px; top:${y}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        --tx:${Math.cos(angle)*dist}px;
+        --ty:${Math.sin(angle)*dist}px;
+        animation-duration:${0.6 + Math.random()*0.8}s;
+        animation-delay:${Math.random()*0.2}s;
+      `;
+      particlesEl.appendChild(p);
+      setTimeout(() => p.remove(), 1800);
+    }
+  }
+
+  // Spawn some on load
+  setTimeout(() => {
+    const hw = window.innerWidth, hh = window.innerHeight;
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => spawnParticles(hw/2 + (Math.random()-0.5)*400, hh/2 + (Math.random()-0.5)*200, 12), i*200);
+    }
+  }, 800);
+
+  document.querySelector('.hero').addEventListener('click', e => {
+    spawnParticles(e.clientX, e.clientY, 24);
+  });
+
+  // Canvas
+  const canvas = document.getElementById('splashCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0a0012';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const canvasColors = ['#e91e8c','#ff6b00','#f5c800','#00bfff','#00c853','#7c3aed','#ff4081','#ff1744','#ffffff'];
+  let painting = false;
+  let currentColor = canvasColors[0];
+  let colorIdx = 0;
+
+  function splash(x, y) {
+    currentColor = canvasColors[colorIdx % canvasColors.length];
+    colorIdx++;
+
+    for (let i = 0; i < 30; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const r = Math.random() * 50;
+      const size = 3 + Math.random() * 18;
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(angle)*r, y + Math.sin(angle)*r, size, 0, Math.PI*2);
+      ctx.fillStyle = currentColor + Math.floor(80 + Math.random()*175).toString(16).padStart(2,'0');
+      ctx.fill();
+    }
+
+    // core blob
+    const grd = ctx.createRadialGradient(x,y,0,x,y,40);
+    grd.addColorStop(0, currentColor + 'cc');
+    grd.addColorStop(1, currentColor + '00');
+    ctx.beginPath();
+    ctx.arc(x,y,40,0,Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+  }
+
+  function getPos(e, el) {
+    const rect = el.getBoundingClientRect();
+    const scaleX = el.width / rect.width;
+    const scaleY = el.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - rect.left)*scaleX, y: (src.clientY - rect.top)*scaleY };
+  }
+
+  canvas.addEventListener('mousedown', e => { painting=true; const p=getPos(e,canvas); splash(p.x,p.y); });
+  canvas.addEventListener('mousemove', e => { if(!painting) return; const p=getPos(e,canvas); splash(p.x,p.y); });
+  canvas.addEventListener('mouseup', () => painting=false);
+  canvas.addEventListener('mouseleave', () => painting=false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); painting=true; const p=getPos(e,canvas); splash(p.x,p.y); }, {passive:false});
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if(!painting) return; const p=getPos(e,canvas); splash(p.x,p.y); }, {passive:false});
+  canvas.addEventListener('touchend', () => painting=false);
+
+  // Scroll-triggered color heading reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.opacity = '1';
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.timeline-item').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(-20px)';
+    el.style.transition = `opacity 0.5s ${i*0.1}s ease, transform 0.5s ${i*0.1}s ease`;
+    observer.observe(el);
+  });
+  const resizeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateX(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.timeline-item').forEach(el => resizeObs.observe(el));
+</script>
+</body>
+</html>
